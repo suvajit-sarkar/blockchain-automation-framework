@@ -23,8 +23,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install molecule==3.0.6 yamllint ansible-lint docker==4.2.2 openshift
-        # export the bin path 
-        export PATH=~/bin:$PATH 
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       if: |
         contains(github.event.pull_request.title, '[shared]') ||
@@ -33,6 +31,9 @@ jobs:
     - name: Test Stage Shared default
       run: |
         cd ./platforms/shared/configuration
+        # export the bin path 
+        export PATH=~/bin:$PATH
+        printenv
         molecule test -s default
       if: contains(github.event.pull_request.title, '[shared]')
     - name: Test Stage kubernetes-corda
