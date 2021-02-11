@@ -71,7 +71,23 @@ spec:
         args:
         - |-
           cd /opt/networkmap/
-          while true; do tail -f *.log 2>/dev/null; sleep 5; done
+          COUNTER=1
+          NETWORK_ROOT_TRUST=/opt/networkmap/network-root-truststore.jks                
+          while [ "$COUNTER" -le {{ $.Values.healthcheck.readinessthreshold }} ]
+          do
+            curl http://localhost:8088/network-map/truststore --output network-root-truststore.jks  
+            if [ -f "$NETWORK_ROOT_TRUST" ]
+            then                
+              
+              sleep {{ $.Values.healthcheck.readinesscheckinterval }}
+            else
+              echo "SUCCESS!"
+              echo "NMS running and fetched truststore"
+              exit 0
+              break
+            fi   
+          done
+          while true; do tail -f logs/*.log 2>/dev/null; sleep 5; done
           # in case sth went wrong just wait indefinitely ...
           tail -f /dev/null
         volumeMounts:
