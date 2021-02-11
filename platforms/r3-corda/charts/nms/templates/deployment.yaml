@@ -87,7 +87,7 @@ spec:
               break
             fi   
           done
-          while true; do tail -f logs/*.log 2>/dev/null; sleep 5; done
+          while true; do tail -f ./logs/*.log 2>/dev/null; sleep 5; done
           # in case sth went wrong just wait indefinitely ...
           tail -f /dev/null
         volumeMounts:
