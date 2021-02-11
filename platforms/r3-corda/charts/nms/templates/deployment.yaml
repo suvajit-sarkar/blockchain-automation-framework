@@ -64,7 +64,7 @@ spec:
       - name: logs
         image: "{{ .Values.image.initContainerName }}"
         imagePullPolicy: {{ .Values.image.pullPolicy }}
-        command: ["/bin/bash", "-c"]
+        command: ["sh", "-c"]
         args:
         - |-
           cd /opt/networkmap/
