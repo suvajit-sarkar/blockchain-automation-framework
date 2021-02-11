@@ -75,7 +75,7 @@ spec:
           NETWORK_ROOT_TRUST=/opt/networkmap/network-root-truststore.jks                
           while [ "$COUNTER" -le {{ $.Values.healthcheck.readinessthreshold }} ]
           do
-            curl http://localhost:8088/network-map/truststore --output network-root-truststore.jks  
+            curl http://localhost:8080/network-map/truststore --output network-root-truststore.jks  
             if [ -f "$NETWORK_ROOT_TRUST" ]
             then
               echo "SUCCESS!"
