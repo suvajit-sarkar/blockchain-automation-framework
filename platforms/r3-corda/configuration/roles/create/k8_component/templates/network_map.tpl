@@ -82,5 +82,5 @@ spec:
 {% if network.env.proxy == 'ambassador' %}
     ambassador:
       external_url_suffix: {{item.external_url_suffix}}
-{% else %}
+{% endif %}
       

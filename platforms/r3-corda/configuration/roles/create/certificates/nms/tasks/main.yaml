@@ -162,4 +162,4 @@
     name: "create/certificates/ambassador"
   vars:
     cert_file: "{{ network | json_query('network_services[?type==`networkmap`].certificate') | first }}"
-  network.env.proxy == 'ambassador'
+  when: network.env.proxy == 'ambassador'
