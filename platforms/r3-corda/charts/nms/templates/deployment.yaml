@@ -72,10 +72,10 @@ spec:
         - |-
           cd /opt/networkmap/
           COUNTER=1
-          NETWORK_ROOT_TRUST=/opt/networkmap/network-root-truststore.jks                
+          NETWORK_ROOT_TRUST=/opt/networkmap/network-map-truststore.jks
           while [ "$COUNTER" -le {{ $.Values.healthcheck.readinessthreshold }} ]
           do
-            curl http://localhost:8080/network-map/truststore --output network-root-truststore.jks  
+            curl http://localhost:8080/network-map/truststore --output network-map-truststore.jks
             if [ -f "$NETWORK_ROOT_TRUST" ]
             then
               echo "SUCCESS!"
