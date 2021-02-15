@@ -86,7 +86,10 @@ spec:
               sleep {{ $.Values.healthcheck.readinesscheckinterval }}
             fi   
           done 
-          if ["$COUNTER" -gt {{ $.Values.healthcheck.readinessthreshold }} ] then; exit 1; fi;
+          if ["$COUNTER" -gt {{ $.Values.healthcheck.readinessthreshold }} ] 
+          then 
+            exit 1 
+          fi
           while true; do tail -f ./logs/*.log 2>/dev/null; sleep 5; done
         volumeMounts:
         - name: {{ .Values.nodeName }}-logs
