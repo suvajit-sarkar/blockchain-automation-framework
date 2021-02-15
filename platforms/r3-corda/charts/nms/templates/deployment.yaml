@@ -82,12 +82,12 @@ spec:
               echo "NMS running and fetched truststore"
               break
             else
+              COUNTER=`expr "$COUNTER" + 1`
               sleep {{ $.Values.healthcheck.readinesscheckinterval }}
             fi   
-          done
+          done 
+          if ["$COUNTER" -gt {{ $.Values.healthcheck.readinessthreshold }} ] then; exit 1; fi;
           while true; do tail -f ./logs/*.log 2>/dev/null; sleep 5; done
-          # in case sth went wrong just wait indefinitely ...
-          tail -f /dev/null
         volumeMounts:
         - name: {{ .Values.nodeName }}-logs
           mountPath: "{{ .Values.image.mountPath.basePath }}/logs"
