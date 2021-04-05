@@ -1,0 +1,28 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: dso-net-ca-tools
+  namespace: dso-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: dso-net-ca-tools
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: star
+    path: platforms/hyperledger-fabric/charts/catools
+  values:
+    metadata:
+      namespace: dso-net
+      name: ca-tools
+
+    replicaCount: 1
+
+    image:
+      repository: hyperledger/fabric-ca-tools
+      tag: 1.2.1
+      pullPolicy: IfNotPresent
+      
+    storage:
+      storageclassname: dsosc
+      storagesize: 512Mi
