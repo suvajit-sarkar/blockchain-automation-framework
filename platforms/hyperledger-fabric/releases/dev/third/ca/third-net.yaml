@@ -1,0 +1,44 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: third-net-ca
+  namespace: third-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: third-net-ca
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: star
+    path: platforms/hyperledger-fabric/charts/ca    
+  values:
+    metadata:
+      namespace: third-net
+      images:
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+        ca: hyperledger/fabric-ca:1.4.4
+    server:
+      name: ca
+      tlsstatus: true
+      admin: third-admin
+    storage:
+      storageclassname: thirdsc
+      storagesize: 512Mi
+    vault:
+      role: vault-role
+      address: http://vault.star.blockchaincloudpoc.com:20002
+      authpath: third-net-auth
+      secretcert: secret/crypto/peerOrganizations/third-net/ca?ca.third-net-cert.pem
+      secretkey: secret/crypto/peerOrganizations/third-net/ca?third-net-CA.key
+      secretadminpass: secret/credentials/third-net/ca/third?user
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+    service:
+      servicetype: ClusterIP
+      ports:
+        tcp:
+          port: 7054
+    proxy:
+      provider: haproxy
+      type: peer
+      external_url_suffix: fab.star.blockchaincloudpoc.com
