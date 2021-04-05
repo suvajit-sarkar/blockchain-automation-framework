@@ -1,0 +1,48 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: anchorpeer-starnetwork-tso
+  namespace: tso-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: anchorpeer-starnetwork-tso
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: star
+    path: platforms/hyperledger-fabric/charts/anchorpeer
+  values:
+    metadata:
+      namespace: tso-net
+      images:
+        fabrictools: hyperledger/fabric-tools:1.4.8
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+
+    peer:
+      name: peer0
+      address: peer0.tso-net.fab.star.blockchaincloudpoc.com:8443
+      localmspid: tsoMSP
+      loglevel: debug
+      tlsstatus: true
+
+    vault:
+      role: vault-role
+      address: http://vault.star.blockchaincloudpoc.com:20002
+      authpath: tso-net-auth
+      adminsecretprefix: secret/crypto/peerOrganizations/tso-net/users/admin
+      orderersecretprefix: secret/crypto/peerOrganizations/tso-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+
+    channel:
+      name: starnetwork      
+    orderer:
+      address: orderer.fab.star.blockchaincloudpoc.com:8443
+    anchorstx: |-
+      CrQCChEKDwgCIgtzdGFybmV0d29yaxKeAgqbAgoLc3Rhcm5ldHdvcmsSVhJUCgtBcHBsaWNhdGlv
+      bhJFCAESOQoGdHNvTVNQEi8aBwoDTVNQEgAiCwoHUmVhZGVycxIAIgsKB1dyaXRlcnMSACIKCgZB
+      ZG1pbnMSACoGQWRtaW5zGrMBErABCgtBcHBsaWNhdGlvbhKgAQgBEpMBCgZ0c29NU1ASiAEIARoH
+      CgNNU1ASABpNCgtBbmNob3JQZWVycxI+EjQKMgotcGVlcjAudHNvLW5ldC5mYWIuc3Rhci5ibG9j
+      a2NoYWluY2xvdWRwb2MuY29tEPtBGgZBZG1pbnMiCwoHUmVhZGVycxIAIgsKB1dyaXRlcnMSACIK
+      CgZBZG1pbnMSACoGQWRtaW5zKgZBZG1pbnM=
+
