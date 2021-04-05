@@ -1,0 +1,48 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: anchorpeer-starnetwork-third
+  namespace: third-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: anchorpeer-starnetwork-third
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: star
+    path: platforms/hyperledger-fabric/charts/anchorpeer
+  values:
+    metadata:
+      namespace: third-net
+      images:
+        fabrictools: hyperledger/fabric-tools:1.4.8
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+
+    peer:
+      name: peer0
+      address: peer0.third-net.fab.star.blockchaincloudpoc.com:8443
+      localmspid: thirdMSP
+      loglevel: debug
+      tlsstatus: true
+
+    vault:
+      role: vault-role
+      address: http://vault.star.blockchaincloudpoc.com:20002
+      authpath: third-net-auth
+      adminsecretprefix: secret/crypto/peerOrganizations/third-net/users/admin
+      orderersecretprefix: secret/crypto/peerOrganizations/third-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+
+    channel:
+      name: starnetwork      
+    orderer:
+      address: orderer.fab.star.blockchaincloudpoc.com:8443
+    anchorstx: |-
+      CroCChEKDwgCIgtzdGFybmV0d29yaxKkAgqhAgoLc3Rhcm5ldHdvcmsSWBJWCgtBcHBsaWNhdGlv
+      bhJHCAESOwoIdGhpcmRNU1ASLxoHCgNNU1ASACILCgdSZWFkZXJzEgAiCwoHV3JpdGVycxIAIgoK
+      BkFkbWlucxIAKgZBZG1pbnMatwEStAEKC0FwcGxpY2F0aW9uEqQBCAESlwEKCHRoaXJkTVNQEooB
+      CAEaTwoLQW5jaG9yUGVlcnMSQBI2CjQKL3BlZXIwLnRoaXJkLW5ldC5mYWIuc3Rhci5ibG9ja2No
+      YWluY2xvdWRwb2MuY29tEPtBGgZBZG1pbnMaBwoDTVNQEgAiCwoHV3JpdGVycxIAIgoKBkFkbWlu
+      cxIAIgsKB1JlYWRlcnMSACoGQWRtaW5zKgZBZG1pbnM=
+
