@@ -1,0 +1,41 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: joinchannel-peer0-join-starnetworkorder-dso-peer0
+  namespace: dso-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: joinchannel-peer0-join-starnetworkorder-dso-peer0
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: star
+    path: platforms/hyperledger-fabric/charts/join_channel
+  values:
+    metadata:
+      namespace: dso-net
+      images:
+        fabrictools: hyperledger/fabric-tools:1.4.8
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+
+    peer:
+      name: peer0
+      address: peer0.dso-net.fab.star.blockchaincloudpoc.com:8443
+      localmspid: dsoMSP
+      loglevel: debug
+      tlsstatus: true
+
+    vault:
+      role: vault-role
+      address: http://vault.star.blockchaincloudpoc.com:20002
+      authpath: dso-net-auth
+      adminsecretprefix: secret/crypto/peerOrganizations/dso-net/users/admin
+      orderersecretprefix: secret/crypto/peerOrganizations/dso-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+
+    channel:
+      name: starnetworkorder      
+    orderer:
+      address: orderer.fab.star.blockchaincloudpoc.com:8443
+
