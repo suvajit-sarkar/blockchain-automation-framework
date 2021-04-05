@@ -1,0 +1,28 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: third-net-ca-tools
+  namespace: third-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: third-net-ca-tools
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: star
+    path: platforms/hyperledger-fabric/charts/catools
+  values:
+    metadata:
+      namespace: third-net
+      name: ca-tools
+
+    replicaCount: 1
+
+    image:
+      repository: hyperledger/fabric-ca-tools
+      tag: 1.2.1
+      pullPolicy: IfNotPresent
+      
+    storage:
+      storageclassname: thirdsc
+      storagesize: 512Mi
