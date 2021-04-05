@@ -1,0 +1,38 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: peer0-dso-cli
+  namespace: dso-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: peer0-dso-cli
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: star
+    path: platforms/hyperledger-fabric/charts/fabric_cli    
+  values:
+    metadata:
+      namespace: dso-net
+      images:
+        fabrictools: hyperledger/fabric-tools:1.4.8
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+    storage:
+      class: dsosc
+      size: 256Mi
+    vault:
+      role: vault-role
+      address: http://vault.star.blockchaincloudpoc.com:20002
+      authpath: dso-net-auth
+      adminsecretprefix: secret/crypto/peerOrganizations/dso-net/users/admin
+      orderersecretprefix: secret/crypto/peerOrganizations/dso-net/orderer
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+      tls: false
+    peer:
+      name: peer0
+      localmspid: dsoMSP
+      tlsstatus: true
+      address: peer0.dso-net.fab.star.blockchaincloudpoc.com:8443
+    orderer:
+      address: orderer.fab.star.blockchaincloudpoc.com:8443
