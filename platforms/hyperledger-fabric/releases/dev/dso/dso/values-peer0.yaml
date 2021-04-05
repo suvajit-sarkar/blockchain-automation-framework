@@ -1,0 +1,63 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: dso-peer0
+  namespace: dso-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: dso-peer0
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: star
+    path: platforms/hyperledger-fabric/charts/peernode    
+  values:
+    metadata:
+      namespace: dso-net
+      images:
+        couchdb: hyperledger/fabric-couchdb:0.4.18
+        peer: hyperledger/fabric-peer:1.4.8
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+        
+    peer:
+      name: peer0
+      gossippeeraddress: peer0.dso-net:7051
+      gossipexternalendpoint: peer0.dso-net.fab.star.blockchaincloudpoc.com:8443
+      localmspid: dsoMSP
+      loglevel: info
+      tlsstatus: true
+      builder: hyperledger/fabric-ccenv:1.4.8
+      couchdb:
+        username: dso-user
+
+    storage:
+      peer:
+        storageclassname: dsosc
+        storagesize: 512Mi
+      couchdb:
+        storageclassname: dsosc
+        storagesize: 1Gi
+
+    vault:
+      role: vault-role
+      address: http://vault.star.blockchaincloudpoc.com:20002
+      authpath: dso-net-auth
+      secretprefix: secret/crypto/peerOrganizations/dso-net/peers/peer0.dso-net
+      secretambassador: secret/crypto/peerOrganizations/dso-net/ambassador
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+      secretcouchdbpass: secret/credentials/dso-net/couchdb/dso?user
+
+    service:
+      servicetype: ClusterIP
+      ports:
+        grpc:
+          clusteripport: 7051
+        events:
+          clusteripport: 7053
+        couchdb:
+          clusteripport: 5984
+          
+    proxy:
+      provider: "haproxy"
+      external_url_suffix: fab.star.blockchaincloudpoc.com
