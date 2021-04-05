@@ -1,0 +1,28 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: orderer-net-ca-tools
+  namespace: orderer-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: orderer-net-ca-tools
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: star
+    path: platforms/hyperledger-fabric/charts/catools
+  values:
+    metadata:
+      namespace: orderer-net
+      name: ca-tools
+
+    replicaCount: 1
+
+    image:
+      repository: hyperledger/fabric-ca-tools
+      tag: 1.2.1
+      pullPolicy: IfNotPresent
+      
+    storage:
+      storageclassname: orderersc
+      storagesize: 512Mi
