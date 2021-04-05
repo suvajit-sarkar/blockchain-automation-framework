@@ -1,0 +1,44 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: orderer-net-ca
+  namespace: orderer-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: orderer-net-ca
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: star
+    path: platforms/hyperledger-fabric/charts/ca    
+  values:
+    metadata:
+      namespace: orderer-net
+      images:
+        alpineutils: index.docker.io/hyperledgerlabs/alpine-utils:1.0
+        ca: hyperledger/fabric-ca:1.4.4
+    server:
+      name: ca
+      tlsstatus: true
+      admin: orderer-admin
+    storage:
+      storageclassname: orderersc
+      storagesize: 512Mi 
+    vault:
+      role: vault-role
+      address: http://vault.star.blockchaincloudpoc.com:20002
+      authpath: orderer-net-auth
+      secretcert: secret/crypto/ordererOrganizations/orderer-net/ca?ca.orderer-net-cert.pem
+      secretkey: secret/crypto/ordererOrganizations/orderer-net/ca?orderer-net-CA.key
+      secretadminpass: secret/credentials/orderer-net/ca/orderer?user
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+    service:
+      servicetype: ClusterIP
+      ports:
+        tcp:
+          port: 7054
+    proxy:
+      provider: haproxy
+      type: orderer
+      external_url_suffix: fab.star.blockchaincloudpoc.com
