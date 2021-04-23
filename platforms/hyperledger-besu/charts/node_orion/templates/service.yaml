@@ -15,7 +15,7 @@ metadata:
       service: {{ .Values.node.name }}.{{ .Values.metadata.namespace }}:{{ .Values.node.ports.rpc }}
       ---
       apiVersion: ambassador/v2
-      kind: TCPMapping
+      kind: Mapping
       name: {{ .Values.node.name }}-rlpx
       port: {{ .Values.proxy.p2p }}
       service: {{ .Values.node.name }}.{{ .Values.metadata.namespace }}:{{ .Values.node.ports.p2p }}
