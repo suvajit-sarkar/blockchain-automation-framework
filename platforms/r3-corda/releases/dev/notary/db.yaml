@@ -1,0 +1,47 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: notarydb
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: supplychain-ns
+spec:
+  releaseName: notarydb
+  chart:
+    path: platforms/r3-corda/charts/h2
+    git: https://github.com/suvajit-sarkar/blockchain-automation-framework.git
+    ref: develop
+  values:
+    replicaCount: 1
+    nodeName: notary
+    metadata:
+      namespace: supplychain-ns
+    image:
+      containerName: index.docker.io/hyperledgerlabs/h2:2018
+      imagePullSecret: regcred
+    resources:
+      limits: "512Mi"
+      requests: "512Mi"
+    storage:
+      memory: 512Mi
+      mountPath: "/opt/h2-data"
+      name: minikubestorageclass
+    service:
+      type: NodePort
+      p2p:
+        port: 10002
+      rpc:
+        port: 10003
+      rpcadmin:
+        port: 10005
+      tcp:
+        port: 9101
+        targetPort: 1521
+      web:
+        targetPort: 81
+        port: 8080
+      annotations: {}
+    deployment:
+      annotations: {}
+    pvc:
+      annotations: {}
