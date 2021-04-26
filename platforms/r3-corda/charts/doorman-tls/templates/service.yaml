@@ -8,11 +8,11 @@ metadata:
     getambassador.io/config: | 
       ---
       apiVersion: ambassador/v2
-      kind: TCPMapping
+      kind: Mapping
       name: {{ .Values.nodeName }}_mapping
-      port: 443
+      prefix: /
       service: https://{{ .Values.nodeName }}.{{ .Values.metadata.namespace }}:{{ .Values.service.port }}
-      host: {{ .Values.nodeName }}.{{ .Values.ambassador.external_url_suffix }}
+      host: {{ .Values.nodeName }}.{{ .Values.ambassador.external_url_suffix }}:443
       tls: {{ .Values.nodeName }}_mapping_tlscontext
       ---
       apiVersion: ambassador/v2
