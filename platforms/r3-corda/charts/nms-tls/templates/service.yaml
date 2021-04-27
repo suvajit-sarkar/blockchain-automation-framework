@@ -12,7 +12,7 @@ metadata:
       name: {{ .Values.nodeName }}_mapping
       prefix: /
       service: https://{{ .Values.nodeName }}.{{ .Values.metadata.namespace }}:{{ .Values.service.port }}
-      host: {{ .Values.nodeName }}.{{ .Values.ambassador.external_url_suffix }}:443
+      host: {{ .Values.nodeName }}.{{ .Values.ambassador.external_url_suffix }}
       tls: {{ .Values.nodeName }}_mapping_tlscontext
       ---
       apiVersion: ambassador/v2
