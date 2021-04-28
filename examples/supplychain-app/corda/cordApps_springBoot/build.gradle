@@ -30,6 +30,7 @@ buildscript {
         classpath "net.corda.plugins:quasar-utils:$corda_gradle_plugins_version"
         classpath "org.springframework.boot:spring-boot-gradle-plugin:$spring_boot_gradle_plugin_version"
         classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2"
+        implementation 'com.supplychain.bcc.cordapp-supply-chain:0.1'
     }
 }
 
@@ -50,6 +51,7 @@ apply plugin: 'net.corda.plugins.cordformation'
 apply plugin: 'net.corda.plugins.quasar-utils'
 apply plugin: 'org.sonarqube'
 apply plugin: 'maven-publish'
+apply plugin: 'maven'
 
 publishing{
     publications {

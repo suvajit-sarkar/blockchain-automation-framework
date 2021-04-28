@@ -5,6 +5,6 @@ dlt_templates:
   nms: network_map.tpl
   reviewer_rbac: reviewer_rbac.tpl
   awsstorageclass: eks_storageclass.tpl
-  minikube-storageclass: mini_storageclass.tpl
+  minikubestorageclass: dd_storageclass.tpl
   vault-reviewer: reviewer.tpl
   vaultAuth: vault_auth.tpl
