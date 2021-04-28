@@ -18,8 +18,8 @@ spec:
       namespace: carrier-ns
       type: cordaopensource
     image:
-      containerName: adopblockchaincloud0502.azurecr.io/supplychain_corda:springboot_0.4.2.0
-      initContainerName: adopblockchaincloud0502.azurecr.io/alpine-utils:1.0
+      containerName: index.docker.io/hyperledgerlabs/supplychain_corda:springboot_0.4.2.0
+      initContainerName: index.docker.io/hyperledgerlabs/alpine-utils:1.0
       imagePullSecret: regcred
       privateCertificate: true
     smartContract:
