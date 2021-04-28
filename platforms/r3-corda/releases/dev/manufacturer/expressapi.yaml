@@ -1,0 +1,35 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: manufacturer-expressapi
+  namespace: manufacturer-ns
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  chart:
+    path: examples/supplychain-app/charts/expressapp
+    git: "git@github.com:suvajit-sarkar/blockchain-automation-framework.git"
+    ref: "workspace"
+  releaseName: manufacturercorda-expressapi
+  values:
+    nodeName: manufacturer-expressapi
+    metadata:
+      namespace: manufacturer-ns
+    replicaCount: 1
+    expressapp:
+      serviceType: ClusterIP
+      image: index.docker.io/hyperledgerlabs/supplychain_corda:express_app_0.4.2.0
+      pullPolicy: Always
+      pullSecrets: regcred
+      nodePorts:
+        port: 3000
+        targetPort: 3000
+        name: tcp
+      env:
+        apiUrl: https://manufacturer-springboot.manufacturer-ns:20001/api/v1
+    proxy:
+      provider: ambassador
+      name: manufacturer
+      type: corda
+      external_url_suffix: rc.demo.aws.blockchaincloudpoc.com
+      peer_name: manufacturer
