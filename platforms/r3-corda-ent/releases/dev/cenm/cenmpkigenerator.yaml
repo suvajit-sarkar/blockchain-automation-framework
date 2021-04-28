@@ -1,0 +1,50 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: cenmpkigenerator
+  namespace: cenm-ent
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: cenmpkigenerator
+  chart:
+    git: https://github.com/suvajit-sarkar/blockchain-automation-framework.git
+    ref: develop
+    path: platforms/r3-corda-ent/charts/generate-pki
+  values:
+    nodeName: cenm
+    metadata:
+      namespace: cenm-ent
+    image:
+      initContainerName: index.docker.io/alpine-utils:1.0
+      pkiContainerName: index.docker.io/corda/enterprise-pki:1.2-zulu-openjdk8u242
+      imagePullSecret: regcred
+      pullPolicy: Always
+    acceptLicense: YES
+    volume:
+      baseDir: /opt/corda
+    vault:
+      address: http://172.17.0.2:8200
+      role: vault-role
+      authpath: cordaentcenm
+      serviceaccountname: vault-auth
+      certsecretprefix: secret/cenm
+      retries: 20
+      sleepTimeAfterError: 20
+    cenmServices:
+      signerName: signer
+      idmanName: idman
+      networkmapName: networkmap
+    identityManager:
+      publicIp: idman.cenm-ent
+      publicPort: 8443
+    subjects:
+      tlscrlsigner: "CN=Test TLS Signer Certificate, OU=HQ, O=HoldCo LLC, L=New York, C=US"
+      tlscrlissuer: "CN=Corda TLS CRL Authority,OU=Corda UAT,O=R3 HoldCo LLC,L=New York,C=US"
+      rootca: "CN=DLT Root CA,OU=DLT,O=DLT,L=London,C=GB"
+      subordinateca: "CN=Test Subordinate CA Certificate, OU=HQ, O=HoldCo LLC, L=New York, C=US"
+      idmanca: "CN=Test Identity Manager Service Certificate, OU=HQ, O=HoldCo LLC, L=New York, C=US"
+      networkmap: "CN=Test Network Map Service Certificate, OU=HQ, O=HoldCo LLC, L=New York, C=US"
+    replicas: 1
+    cordaJarMx: 256
+    configPath: etc
