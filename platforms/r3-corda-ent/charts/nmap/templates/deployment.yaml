@@ -377,13 +377,13 @@ spec:
         - name: notary-nodeinfo
           mountPath: {{ .Values.config.volume.baseDir }}/notary-nodeinfo
         - name: nmap-etc
-          mountPath: {{ .Values.config.volume.baseDir }}etc
+          mountPath: {{ .Values.config.volume.baseDir }}/etc
         - name: certificates
           mountPath: {{ .Values.config.volume.baseDir }}/DATA
         - name: nmap-logs
           mountPath: {{ .Values.config.volume.baseDir }}/logs
         - name: nmap-h2
-          mountPath: {{ .Values.config.volume.baseDir }}h2
+          mountPath: {{ .Values.config.volume.baseDir }}/h2
         resources:
           requests:
             memory: {{ .Values.config.pod.resources.requests }}
