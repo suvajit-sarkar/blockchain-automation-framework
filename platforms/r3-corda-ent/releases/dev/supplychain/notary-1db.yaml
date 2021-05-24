@@ -1,0 +1,39 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: notary-1db
+  namespace: supplychain-ent
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: notary-1db
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: cenm1.5
+    path: platforms/r3-corda-ent/charts/h2
+  values:
+    nodeName: notary-1
+    metadata:
+      namespace: supplychain-ent
+    replicaCount: 1
+    image:
+      containerName: index.docker.io/hyperledgerlabs/h2:2018
+      imagePullSecret: regcred
+    resources:
+      limits: 512Mi
+      requests: 512Mi
+    storage:
+      name: "cordaentsc"
+      memory: 512Mi
+    service:
+      type: NodePort
+      tcp:
+        port: 9101
+        targetPort: 1521
+      web:
+        targetPort: 81
+        port: 8080
+    deployment:
+      annotations: {}
+    pvc:
+      annotations: {}
