@@ -1,0 +1,91 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: supplychain-notary-1-notary-initial-registration
+  namespace: supplychain-ent
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: supplychain-notary-1-notary-initial-registration
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: cenm1.5
+    path: platforms/r3-corda-ent/charts/notary-initial-registration
+  values:
+    nodeName: notary-1-initial-registration
+    nodePath: notary-1
+    metadata:
+      namespace: supplychain-ent
+    image:
+      initContainerName: adopblockchaincloud0502.azurecr.io/alpine-utils:1.0
+      nodeContainerName: adopblockchaincloud0502.azurecr.io/corda/enterprise-node:4.7
+      imagePullSecret: regcred
+      pullPolicy: Always
+      privateCertificate: true
+    vault:
+      address: http://vault.internal.demo.aws.blockchaincloudpoc.com:9001
+      certSecretPrefix: secret/supplychain
+      serviceAccountName: vault-auth
+      role: vault-role
+      authPath: cordaentsupplychain
+      retries: 30
+      retryInterval: 10
+    service:
+      p2pPort: 10002
+      rpc:
+        address: "0.0.0.0"
+        addressPort: 10003
+        admin:
+          address: "localhost"
+          addressPort: 10770
+        standAloneBroker: false
+        useSSL: false
+        users:
+          username: notary
+          password: notaryP
+    networkServices:
+      idmanName: idman
+      doormanURL: https://idman.rce.demo.aws.blockchaincloudpoc.com
+      idmanDomain: idman.rce.demo.aws.blockchaincloudpoc.com
+      networkmapName: networkmap
+      networkMapURL: https://networkmap.rce.demo.aws.blockchaincloudpoc.com
+      networkMapDomain: networkmap.rce.demo.aws.blockchaincloudpoc.com
+    dataSourceProperties:
+      dataSource:
+        password: "notary-1-db-password"
+        url: "jdbc:h2:tcp://notary-1db:9101/persistence;DB_CLOSE_ON_EXIT=FALSE;LOCK_TIMEOUT=10000;WRITE_DELAY=100;AUTO_RECONNECT=TRUE;"
+        user: "notary-1-db-user"
+      dataSourceClassName: "org.h2.jdbcx.JdbcDataSource"
+      dbUrl: "notary-1db"
+      dbPort: 9101
+    nodeConf:
+      legalName: O=Notary,OU=Notary1,L=London,C=GB
+      emailAddress: dev@baf.com
+      notaryPublicIP: notary-1.rce.demo.aws.blockchaincloudpoc.com
+      devMode: false
+      notary:
+        serviceLegalName: O=Notary Service,OU=Notary,L=London,C=GB
+        validating: True
+      p2p:
+        url: notary-1.supplychain-ent
+      ambassador:
+        p2pPort: 15031
+        external_url_suffix: rce.demo.aws.blockchaincloudpoc.com
+        p2pAddress: supplychain-notary-1-notary-initial-registration.rce.demo.aws.blockchaincloudpoc.com:15031
+      jarPath: bin
+      configPath: etc
+      cordaJar:
+        memorySize: 1524
+        unit: M
+      volume:
+        baseDir: /opt/corda
+      pod:
+        resources:
+          limits: 2056M
+          requests: 2056M
+    healthCheckNodePort: 0
+    sleepTimeAfterError: 60
+    sleepTime: 10
+    healthcheck:
+      readinesscheckinterval: 10
+      readinessthreshold: 15
