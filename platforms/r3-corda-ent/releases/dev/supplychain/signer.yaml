@@ -1,0 +1,76 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: signer
+  annotations:
+    fluxcd.io/automated: "false"
+  namespace: supplychain-ent
+spec:
+  releaseName: signer
+  chart:
+    path: platforms/r3-corda-ent/charts/signer
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: cenm1.5
+  values:
+    nodeName: signer
+    metadata:
+      namespace: supplychain-ent
+    image:
+      initContainerName: adopblockchaincloud0502.azurecr.io/alpine-utils:1.0
+      signerContainerName: adopblockchaincloud0502.azurecr.io/corda/enterprise-signer:1.5.1-zulu-openjdk8u242
+      imagePullSecret: regcred
+      pullPolicy: Always
+    acceptLicense: YES
+    vault:
+      address: http://vault.internal.demo.aws.blockchaincloudpoc.com:9001
+      role: vault-role
+      authPath: cordaentsupplychain
+      serviceAccountName: vault-auth
+      certSecretPrefix: secret/supplychain
+      retries: 10
+      sleepTimeAfterError: 15
+    service:
+      ssh:
+        port: 2222
+        targetPort: 2222
+        type: ClusterIP
+      shell:
+        user: signer
+        password: signerP
+    serviceLocations:
+      identityManager:
+        host: idman.supplychain-ent
+        publicIp: idman.rce.demo.aws.blockchaincloudpoc.com
+        port: 5052
+        publicPort: 443
+      networkMap:
+        host: networkmap.supplychain-ent
+        port: 5050
+      revocation:
+        port: 5053
+    signers:
+      CSR:
+        schedule:
+          interval: 1m
+      CRL:
+        schedule:
+          interval: 1d
+      NetworkMap:
+        schedule:
+          interval: 1m
+      NetworkParameters:
+        schedule:
+          interval: 1m
+    config:
+      volume:
+        baseDir: /opt/cenm
+      jarPath: bin
+      configPath: etc
+      cordaJar:
+        memorySize: 512
+        unit: M
+      pod:  
+        resources:
+          limits: 512M
+          requests: 512M
+      replicas: 1
