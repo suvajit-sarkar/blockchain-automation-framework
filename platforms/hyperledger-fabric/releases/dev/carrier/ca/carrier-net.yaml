@@ -1,0 +1,45 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: carrier-net-ca
+  namespace: carrier-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: carrier-net-ca
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: develop
+    path: platforms/hyperledger-fabric/charts/ca    
+  values:
+    metadata:
+      namespace: carrier-net
+      images:
+        alpineutils: adopblockchaincloud0502.azurecr.io/alpine-utils:1.0
+        ca: hyperledger/fabric-ca:1.4.8
+       
+    server:
+      name: ca
+      tlsstatus: true
+      admin: carrier-admin
+    storage:
+      storageclassname: carriersc
+      storagesize: 512Mi
+    vault:
+      role: vault-role
+      address: http://vault.internal.demo.aws.blockchaincloudpoc.com:9001
+      authpath: demo-fabriccarrier-net-auth
+      secretcert: secret/crypto/peerOrganizations/carrier-net/ca?ca.carrier-net-cert.pem
+      secretkey: secret/crypto/peerOrganizations/carrier-net/ca?carrier-net-CA.key
+      secretadminpass: secret/credentials/carrier-net/ca/carrier?user
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+    service:
+      servicetype: ClusterIP
+      ports:
+        tcp:
+          port: 7054
+    proxy:
+      provider: haproxy
+      type: peer
+      external_url_suffix: hf.demo.aws.blockchaincloudpoc.com
