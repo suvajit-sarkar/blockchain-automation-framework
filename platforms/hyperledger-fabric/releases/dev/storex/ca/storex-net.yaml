@@ -1,0 +1,45 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: storex-net-ca
+  namespace: storex-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: storex-net-ca
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: develop
+    path: platforms/hyperledger-fabric/charts/ca    
+  values:
+    metadata:
+      namespace: storex-net
+      images:
+        alpineutils: adopblockchaincloud0502.azurecr.io/alpine-utils:1.0
+        ca: hyperledger/fabric-ca:1.4.8
+       
+    server:
+      name: ca
+      tlsstatus: true
+      admin: storex-admin
+    storage:
+      storageclassname: storexsc
+      storagesize: 512Mi
+    vault:
+      role: vault-role
+      address: http://vault.internal.demo.aws.blockchaincloudpoc.com:9001
+      authpath: demo-fabricstorex-net-auth
+      secretcert: secret/crypto/peerOrganizations/storex-net/ca?ca.storex-net-cert.pem
+      secretkey: secret/crypto/peerOrganizations/storex-net/ca?storex-net-CA.key
+      secretadminpass: secret/credentials/storex-net/ca/storex?user
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+    service:
+      servicetype: ClusterIP
+      ports:
+        tcp:
+          port: 7054
+    proxy:
+      provider: haproxy
+      type: peer
+      external_url_suffix: hf.demo.aws.blockchaincloudpoc.com
