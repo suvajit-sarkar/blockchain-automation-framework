@@ -1,0 +1,52 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: channel-carrier-allchannel
+  namespace: carrier-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: channel-carrier-allchannel
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: develop
+    path: platforms/hyperledger-fabric/charts/create_channel   
+  values:
+    metadata:
+      namespace: carrier-net
+      network:
+        version 2.2.2
+      images:
+        fabrictools: hyperledger/fabric-tools:2.2.2
+        alpineutils: adopblockchaincloud0502.azurecr.io/alpine-utils:1.0
+    peer:
+      name: peer0
+      address: peer0.carrier-net:7051
+      localmspid: carrierMSP
+      loglevel: debug
+      tlsstatus: true
+
+    vault:
+      role: vault-role
+      address: http://vault.internal.demo.aws.blockchaincloudpoc.com:9001
+      authpath: demo-fabriccarrier-net-auth
+      adminsecretprefix: secret/crypto/peerOrganizations/carrier-net/users/admin
+      orderersecretprefix: secret/crypto/peerOrganizations/carrier-net/orderer 
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+
+    channel:
+      name: allchannel
+    orderer:
+      address: orderer1.hf.demo.aws.blockchaincloudpoc.com:8443
+    channeltx: |-
+      CpsEChgKFggCGgYIrJTYhQYiCmFsbGNoYW5uZWwS/gMK+wMKCmFsbGNoYW5uZWwSZxJVCgtBcHBs
+      aWNhdGlvbhJGEg0KCXN0b3JleE1TUBIAEg4KCmNhcnJpZXJNU1ASABIQCgx3YXJlaG91c2VNU1AS
+      ABITCg9tYW51ZmFjdHVyZXJNU1ASABoOCgpDb25zb3J0aXVtEgAagwMS1wIKC0FwcGxpY2F0aW9u
+      EscCCAESDQoJc3RvcmV4TVNQEgASDgoKY2Fycmllck1TUBIAEhAKDHdhcmVob3VzZU1TUBIAEhMK
+      D21hbnVmYWN0dXJlck1TUBIAGiQKDENhcGFiaWxpdGllcxIUEgoKCAoEVjJfMBIAGgZBZG1pbnMi
+      NQoUTGlmZWN5Y2xlRW5kb3JzZW1lbnQSHRITCAMSDwoLRW5kb3JzZW1lbnQQAhoGQWRtaW5zIiIK
+      B1JlYWRlcnMSFxINCAMSCQoHUmVhZGVycxoGQWRtaW5zIiIKB1dyaXRlcnMSFxINCAMSCQoHV3Jp
+      dGVycxoGQWRtaW5zIiIKBkFkbWlucxIYEg4IAxIKCgZBZG1pbnMQAhoGQWRtaW5zIiwKC0VuZG9y
+      c2VtZW50Eh0SEwgDEg8KC0VuZG9yc2VtZW50EAIaBkFkbWlucyoGQWRtaW5zGicKCkNvbnNvcnRp
+      dW0SGRIXChVTdXBwbHlDaGFpbkNvbnNvcnRpdW0=
