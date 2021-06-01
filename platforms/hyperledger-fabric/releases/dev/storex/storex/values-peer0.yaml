@@ -1,0 +1,63 @@
+apiVersion: helm.fluxcd.io/v1
+kind: HelmRelease
+metadata:
+  name: storex-peer0
+  namespace: storex-net
+  annotations:
+    fluxcd.io/automated: "false"
+spec:
+  releaseName: storex-peer0
+  chart:
+    git: git@github.com:suvajit-sarkar/blockchain-automation-framework.git
+    ref: develop
+    path: platforms/hyperledger-fabric/charts/peernode    
+  values:
+    metadata:
+      namespace: storex-net
+      images:
+        couchdb: couchdb:3.1
+        peer: hyperledger/fabric-peer:2.2.2
+        alpineutils: adopblockchaincloud0502.azurecr.io/alpine-utils:1.0
+        
+    peer:
+      name: peer0
+      gossippeeraddress: peer0.storex-net.hf.demo.aws.blockchaincloudpoc.com:8443
+      gossipexternalendpoint: peer0.storex-net.hf.demo.aws.blockchaincloudpoc.com:8443
+      localmspid: storexMSP
+      loglevel: info
+      tlsstatus: true
+      builder: hyperledger/fabric-ccenv:2.2.2
+      couchdb:
+        username: storex-user
+
+    storage:
+      peer:
+        storageclassname: storexsc
+        storagesize: 512Mi
+      couchdb:
+        storageclassname: storexsc
+        storagesize: 1Gi
+
+    vault:
+      role: vault-role
+      address: http://vault.internal.demo.aws.blockchaincloudpoc.com:9001
+      authpath: demo-fabricstorex-net-auth
+      secretprefix: secret/crypto/peerOrganizations/storex-net/peers/peer0.storex-net
+      secretambassador: secret/crypto/peerOrganizations/storex-net/ambassador
+      serviceaccountname: vault-auth
+      imagesecretname: regcred
+      secretcouchdbpass: secret/credentials/storex-net/couchdb/storex?user
+
+    service:
+      servicetype: ClusterIP
+      ports:
+        grpc:
+          clusteripport: 7051
+        events:
+          clusteripport: 7053
+        couchdb:
+          clusteripport: 5984
+          
+    proxy:
+      provider: "haproxy"
+      external_url_suffix: hf.demo.aws.blockchaincloudpoc.com
