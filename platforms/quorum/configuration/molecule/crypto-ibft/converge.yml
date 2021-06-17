@@ -173,7 +173,7 @@
         vault_nodekey_result:
           failed: True
         peers: "{{ item.services.peers }}"
-        bin_install_dir:  "~/bin"
+        bin_install_dir:  "{{ playbook_dir }}/build/bin"
         install_os: "linux"
         install_arch:  "amd64"
         organisation: "{{ item.name | lower }}"
