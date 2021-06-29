@@ -210,10 +210,10 @@ spec:
           PASSWORD=$(cat $QUORUM_HOME/crypto/keys/password);
 
           printenv;
-          wget -q http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.15.tar.gz;
-          tar -xf mysql-connector-java-8.0.15.tar.gz;
-          cp /mysql-connector-java-8.0.15/mysql-connector-java-8.0.15.jar $QUORUM_HOME;
-          SQL_JAR=$QUORUM_HOME/mysql-connector-java-8.0.15.jar;
+          wget -q http://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-8.0.25.tar.gz;
+          tar -xf mysql-connector-java-8.0.25.tar.gz;
+          cp /mysql-connector-java-8.0.25/mysql-connector-java-8.0.25.jar $QUORUM_HOME;
+          SQL_JAR=$QUORUM_HOME/mysql-connector-java-8.0.25.jar;
 
           # Extracting version from manifest incase we want to add version specific steps/config
           TESSERA_VERSION=$(unzip -p /tessera/tessera-app.jar META-INF/MANIFEST.MF | grep Tessera-Version | cut -d\" \" -f2);
